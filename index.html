@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portofolio Imut 🌥️</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .home-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .home-menu a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .home-menu .menu-item {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      padding: 24px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    .home-menu .menu-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(179, 217, 255, 0.4);
+    }
+    .home-menu .menu-item:active {
+      animation: menuPop 0.35s ease;
+    }
+    @keyframes menuPop {
+      0% { transform: scale(1); }
+      30% { transform: scale(0.9); }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .home-menu .menu-item .label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a3a5c;
+    }
+  </style>
+</head>
+<body>
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+  </div>
+
+  <div class="sparkle-container"></div>
+
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav class="menu-overlay" id="menuOverlay">
+    <div class="menu-content">
+      <a href="about.html" class="menu-link">💌 About</a>
+      <a href="skills.html" class="menu-link">🌸 Skills</a>
+      <a href="projects.html" class="menu-link">🍡 Projects</a>
+      <a href="contact.html" class="menu-link">💬 Contact</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <div class="avatar">
+        <div class="foto-wrapper">
+          <img src="foto.jpg" alt="foto" class="foto-profil" />
+        </div>
+      </div>
+      <h1>Halo, aku Dewiw!</h1>
+      <p class="subtitle">˗ˏˋ welcome to my little corner of the internet ˎˊ˗</p>
+    </header>
+
+    <div class="home-menu">
+      <a href="about.html">
+        <div class="menu-item">
+          <div class="label">About Me</div>
+        </div>
+      </a>
+      <a href="skills.html">
+        <div class="menu-item">
+          <div class="label">Skills</div>
+        </div>
+      </a>
+      <a href="projects.html">
+        <div class="menu-item">
+          <div class="label">Projects</div>
+        </div>
+      </a>
+      <a href="contact.html">
+        <div class="menu-item">
+          <div class="label">Contact</div>
+        </div>
+      </a>
+    </div>
+
+    <footer>
+      <p>Dibuat dengan ☁️ dan 💙 — 2026</p>
+    </footer>
+  </div>
+
+<script>
+  const sparkleContainer = document.querySelector('.sparkle-container');
+
+  function burstSparkles(e) {
+    const sparks = ['✦', '✧', '💙', '☁️', '✨', '⭐'];
+    for (let i = 0; i < 6; i++) {
+      const spark = document.createElement('span');
+      spark.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+      spark.style.cssText = `
+        position: fixed;
+        left: ${e.clientX}px;
+        top: ${e.clientY}px;
+        font-size: ${12 + Math.random() * 16}px;
+        pointer-events: none;
+        z-index: 999;
+        transition: all ${0.5 + Math.random() * 0.5}s ease-out;
+        opacity: 1;
+      `;
+      sparkleContainer.appendChild(spark);
+      requestAnimationFrame(() => {
+        spark.style.left = (e.clientX + (Math.random() - 0.5) * 100) + 'px';
+        spark.style.top = (e.clientY + (Math.random() - 0.5) * 100) + 'px';
+        spark.style.opacity = '0';
+        spark.style.transform = 'scale(1.5)';
+      });
+      setTimeout(() => spark.remove(), 1000);
+    }
+  }
+
+  document.querySelectorAll('.home-menu a').forEach(el => {
+    el.addEventListener('click', function(e) {
+      burstSparkles(e);
+      e.preventDefault();
+      const href = this.getAttribute('href');
+      setTimeout(() => { window.location.href = href; }, 350);
+    });
+  });
+
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('menuOverlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💬 Bubble Chat</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(180deg, #e8f4ff 0%, #c9e2ff 40%, #b3d9ff 100%);
+      min-height: 100vh;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: #4a6a8a;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .back-link:hover { color: #1a3a5c; }
+
+    .inbox {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 20px;
+      min-height: 300px;
+      max-height: 420px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      border: 2px dashed rgba(255,255,255,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .inbox::-webkit-scrollbar {
+      width: 6px;
+    }
+    .inbox::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.5);
+      border-radius: 10px;
+    }
+
+    .msg-card {
+      background: rgba(255,255,255,0.7);
+      border-radius: 18px;
+      padding: 14px 16px;
+      animation: floatIn 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .msg-card .sender {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1a3a5c;
+      margin-bottom: 4px;
+    }
+    .msg-card .text {
+      font-size: 14px;
+      color: #3a5a7a;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .msg-card .time {
+      font-size: 10px;
+      color: #8aaac8;
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    @keyframes floatIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .send-area {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 20px;
+      border: 2px dashed rgba(255,255,255,0.6);
+    }
+    .send-area input {
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 13px;
+      background: rgba(255,255,255,0.7);
+      outline: none;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    .send-area textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 18px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 14px;
+      background: rgba(255,255,255,0.7);
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    .send-area button {
+      padding: 10px 28px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #d4e8ff, #b3d9ff);
+      color: #1a3a5c;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 12px rgba(179, 217, 255, 0.3);
+    }
+    .send-area button:hover {
+      transform: scale(1.05);
+    }
+
+    .inbox-footer {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .inbox-footer button {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 12px;
+      color: #4a6a8a;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .inbox-footer button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .empty-inbox {
+      text-align: center;
+      padding: 40px;
+      color: #8aaac8;
+      font-size: 14px;
+    }
+    .empty-inbox .big {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+  </div>
+
+  <div class="container">
+    <a href="index.html" class="back-link">← Kembali</a>
+
+    <h1 style="font-size:22px;text-align:center;margin-bottom:4px">💬 Bubble Chat</h1>
+    <p style="text-align:center;font-size:13px;color:#4a6a8a;margin-bottom:16px">Kirim pesan untuk Dewiw~ ☁️</p>
+
+    <div class="inbox" id="inbox">
+      <div class="empty-inbox" id="emptyInbox">
+        <div class="big">💬</div>
+        <p>Belum ada pesan~ Jadilah yang pertama!</p>
+      </div>
+    </div>
+
+    <div class="send-area">
+      <input type="text" id="nameInput" placeholder="Nama kamu (opsional)" />
+      <textarea id="msgInput" placeholder="Tulis pesan untuk Dewiw..."></textarea>
+      <button onclick="sendMessage()">Kirim ☁️</button>
+    </div>
+
+    <div class="inbox-footer">
+      <button onclick="clearInbox()">Hapus semua pesan</button>
+    </div>
+  </div>
+
+  <script>
+    const INBOX_KEY = 'bubble_chat_inbox';
+
+    function b64Encode(str) {
+      try { return btoa(unescape(encodeURIComponent(str))); }
+      catch { return btoa(str); }
+    }
+    function b64Decode(str) {
+      try { return decodeURIComponent(escape(atob(str))); }
+      catch { try { return atob(str); } catch { return ''; } }
+    }
+
+    function getMessages() {
+      try {
+        const raw = localStorage.getItem(INBOX_KEY);
+        if (!raw) return [];
+        return JSON.parse(b64Decode(raw));
+      } catch { return []; }
+    }
+
+    function saveMessages(msgs) {
+      localStorage.setItem(INBOX_KEY, b64Encode(JSON.stringify(msgs)));
+    }
+
+    function sendMessage() {
+      const nameInput = document.getElementById('nameInput');
+      const msgInput = document.getElementById('msgInput');
+      const name = nameInput.value.trim() || 'Anonim';
+      const text = msgInput.value.trim();
+      if (!text) {
+        alert('Tulis pesannya dulu~');
+        return;
+      }
+
+      const msgs = getMessages();
+      msgs.unshift({
+        name: name,
+        text: text,
+        time: new Date().toLocaleString('id-ID')
+      });
+      saveMessages(msgs);
+      nameInput.value = '';
+      msgInput.value = '';
+      renderMessages();
+    }
+
+    function clearInbox() {
+      if (confirm('Yakin mau hapus semua pesan?')) {
+        saveMessages([]);
+        renderMessages();
+      }
+    }
+
+    function renderMessages() {
+      const inbox = document.getElementById('inbox');
+      const msgs = getMessages();
+      const empty = document.getElementById('emptyInbox');
+
+      const existing = inbox.querySelectorAll('.msg-card');
+      existing.forEach(el => el.remove());
+
+      if (msgs.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      msgs.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'msg-card';
+        div.innerHTML = `
+          <div class="sender">💌 ${msg.name}</div>
+          <div class="text">${msg.text}</div>
+          <div class="time">${msg.time}</div>
+        `;
+        inbox.appendChild(div);
+      });
+    }
+
+    renderMessages();
+  </script>
+</body>
+</html>

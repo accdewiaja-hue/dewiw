@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>☁️ Cloud Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(180deg, #e8f4ff 0%, #c9e2ff 40%, #b3d9ff 100%);
+      min-height: 100vh;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: #4a6a8a;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .back-link:hover { color: #1a3a5c; }
+
+    .mode-toggle {
+      text-align: right;
+      margin-bottom: 16px;
+    }
+    .mode-btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 20px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .mode-btn.view {
+      background: #b3d9ff;
+      color: #1a3a5c;
+    }
+    .mode-btn.edit {
+      background: #1a3a5c;
+      color: white;
+    }
+    .edit-only {
+      display: none;
+    }
+    .edit-only.show {
+      display: block;
+    }
+
+    .admin-form {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 2px dashed rgba(255,255,255,0.7);
+    }
+    .admin-form h3 {
+      font-size: 16px;
+      color: #1a3a5c;
+      margin-bottom: 12px;
+    }
+    .admin-form input,
+    .admin-form textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 13px;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.7);
+      outline: none;
+    }
+    .admin-form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .admin-form input[type="file"] {
+      padding: 8px;
+      font-size: 12px;
+    }
+    .admin-form button {
+      padding: 8px 24px;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #d4e8ff, #b3d9ff);
+      color: #1a3a5c;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .admin-form button:hover {
+      transform: scale(1.05);
+    }
+
+    .entry {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .entry .date {
+      font-size: 11px;
+      color: #8aaac8;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .entry .note-text {
+      font-size: 14px;
+      color: #3a5a7a;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .entry img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-top: 8px;
+      box-shadow: 0 2px 12px rgba(179, 217, 255, 0.3);
+    }
+    .entry .delete-btn {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    .entry .delete-btn:hover { opacity: 1; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #8aaac8;
+      font-size: 14px;
+    }
+    .empty-state .big {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Kembali</a>
+
+    <div class="mode-toggle">
+      <button class="mode-btn view" id="modeBtn" onclick="toggleMode()">🔒 Mode Lihat</button>
+    </div>
+
+    <div id="entriesContainer">
+      <div class="empty-state" id="emptyState">
+        <div class="big">☁️</div>
+        <p>Belum ada catatan atau foto nih~</p>
+      </div>
+    </div>
+
+    <div class="admin-form edit-only" id="adminForm">
+      <h3>☁️ Tambah Catatan / Foto</h3>
+      <textarea id="noteInput" placeholder="Tulis catatan..."></textarea>
+      <input type="file" id="photoInput" accept="image/*" />
+      <button onclick="addEntry()">Simpan ☁️</button>
+    </div>
+  </div>
+
+  <script>
+    const ENTRIES_KEY = 'cloud_tracker_entries';
+    let isEditMode = false;
+
+    function getEntries() {
+      try {
+        return JSON.parse(localStorage.getItem(ENTRIES_KEY)) || [];
+      } catch { return []; }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(ENTRIES_KEY, JSON.stringify(entries));
+    }
+
+    function addEntry() {
+      const note = document.getElementById('noteInput').value.trim();
+      const fileInput = document.getElementById('photoInput');
+      const file = fileInput.files[0];
+
+      if (!note && !file) {
+        alert('Tulis catatan atau pilih foto dulu~');
+        return;
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const entries = getEntries();
+          entries.unshift({
+            type: 'photo',
+            data: e.target.result,
+            note: note,
+            date: new Date().toLocaleString('id-ID')
+          });
+          saveEntries(entries);
+          document.getElementById('noteInput').value = '';
+          fileInput.value = '';
+          renderEntries();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const entries = getEntries();
+        entries.unshift({
+          type: 'note',
+          note: note,
+          date: new Date().toLocaleString('id-ID')
+        });
+        saveEntries(entries);
+        document.getElementById('noteInput').value = '';
+        renderEntries();
+      }
+    }
+
+    function deleteEntry(index) {
+      const entries = getEntries();
+      entries.splice(index, 1);
+      saveEntries(entries);
+      renderEntries();
+    }
+
+    function renderEntries() {
+      const container = document.getElementById('entriesContainer');
+      const entries = getEntries();
+      const emptyState = document.getElementById('emptyState');
+
+      const items = container.querySelectorAll('.entry');
+      items.forEach(el => el.remove());
+
+      if (entries.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      entries.forEach((entry, i) => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+
+        let delBtn = '';
+        if (isEditMode) {
+          delBtn = `<button class="delete-btn" onclick="deleteEntry(${i})">✕</button>`;
+        }
+
+        let content = '';
+        if (entry.type === 'photo') {
+          content = `<img src="${entry.data}" alt="foto" />`;
+          if (entry.note) {
+            content += `<div class="note-text" style="margin-top:8px">${entry.note}</div>`;
+          }
+        } else {
+          content = `<div class="note-text">${entry.note}</div>`;
+        }
+
+        div.innerHTML = `
+          <div class="date">${entry.date}${delBtn}</div>
+          ${content}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleMode() {
+      isEditMode = !isEditMode;
+      if (isEditMode) {
+        document.getElementById('modeBtn').textContent = '✏️ Mode Edit';
+        document.getElementById('modeBtn').className = 'mode-btn edit';
+        document.getElementById('adminForm').classList.add('show');
+      } else {
+        document.getElementById('modeBtn').textContent = '🔒 Mode Lihat';
+        document.getElementById('modeBtn').className = 'mode-btn view';
+        document.getElementById('adminForm').classList.remove('show');
+      }
+      renderEntries();
+    }
+
+    renderEntries();
+  </script>
+</body>
+</html>

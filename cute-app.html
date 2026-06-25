@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌸 Cute App</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 40%, #f48fb1 100%);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .back-link {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+      color: #7a4a5a;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+    .back-link:hover { color: #4a2a3a; }
+
+    .floating-elements {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .float-item {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.3;
+      animation: floatAround 8s ease-in-out infinite;
+    }
+    .float-item:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; font-size: 30px; }
+    .float-item:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+    .float-item:nth-child(3) { top: 60%; left: 5%; animation-delay: 4s; font-size: 20px; }
+    .float-item:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 1s; font-size: 36px; }
+    .float-item:nth-child(5) { top: 45%; left: 50%; animation-delay: 3s; }
+    .float-item:nth-child(6) { bottom: 10%; left: 30%; animation-delay: 5s; }
+    .float-item:nth-child(7) { top: 75%; right: 30%; animation-delay: 2.5s; }
+    .float-item:nth-child(8) { top: 5%; right: 40%; animation-delay: 4.5s; }
+
+    @keyframes floatAround {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      75% { transform: translateY(15px) rotate(-3deg); }
+    }
+
+    .cat {
+      position: fixed;
+      z-index: 10;
+      font-size: 64px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      user-select: none;
+      pointer-events: auto;
+      filter: drop-shadow(0 4px 12px rgba(244, 143, 177, 0.3));
+    }
+    .cat:hover {
+      transform: scale(1.1);
+    }
+
+    .msg-popup {
+      position: fixed;
+      z-index: 20;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 12px 18px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 14px;
+      color: #4a2a3a;
+      box-shadow: 0 4px 24px rgba(244, 143, 177, 0.2);
+      border: 1px solid rgba(255,255,255,0.6);
+      max-width: 220px;
+      animation: popIn 0.3s ease;
+      text-align: center;
+      pointer-events: none;
+    }
+    .msg-popup .msg-emoji {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 15;
+      font-size: 20px;
+      animation: sparkleFade 1s ease-out forwards;
+    }
+    @keyframes sparkleFade {
+      0% { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.5); }
+    }
+
+    .mood-bar {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      gap: 16px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px);
+      padding: 10px 20px;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .mood-btn {
+      font-size: 28px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      pointer-events: auto;
+    }
+    .mood-btn:hover {
+      transform: scale(1.3);
+    }
+    .mood-btn.active {
+      animation: wiggle 0.5s ease;
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+    }
+
+    .mood-label {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #7a4a5a;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.6);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mood-label.show {
+      opacity: 1;
+    }
+
+    .counter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 13px;
+      color: #7a4a5a;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    .photobooth-btn {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      z-index: 100;
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      font-size: 24px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 16px rgba(244, 143, 177, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .photobooth-btn:hover { transform: scale(1.15); }
+
+    .booth-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 200;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .booth-overlay.open { display: flex; }
+
+    .booth-view {
+      position: relative;
+      width: 90%;
+      max-width: 360px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.4);
+      border: 4px solid rgba(255,255,255,0.2);
+    }
+    .booth-view video {
+      width: 100%;
+      display: block;
+      transform: scaleX(-1);
+    }
+    .booth-view .cat-overlay {
+      position: absolute;
+      font-size: 70px;
+      pointer-events: none;
+      animation: catBob 2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+    }
+    @keyframes catBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .booth-countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 80px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .booth-countdown.show { opacity: 1; }
+
+    .booth-progress {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .booth-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: background 0.3s;
+    }
+    .booth-dot.done { background: #f8bbd0; }
+    .booth-dot.current { background: white; }
+
+    .booth-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .booth-filters {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 6px;
+    }
+    .filter-btn {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover { transform: scale(1.15); }
+    .filter-btn.active { border-color: #f8bbd0; background: rgba(248,187,208,0.3); }
+
+    .booth-stickers {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: none;
+      gap: 8px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 14px;
+      border-radius: 30px;
+    }
+    .booth-stickers.show { display: flex; }
+    .sticker-btn {
+      font-size: 28px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .sticker-btn:hover { transform: scale(1.3); }
+
+    .frame-selector {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      max-width: 160px;
+    }
+    .frame-opt {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      background: rgba(0,0,0,0.2);
+    }
+    .frame-opt:hover { transform: scale(1.2); }
+    .frame-opt.active { border-color: #f8bbd0; }
+
+    .booth-timer-hint {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .pixel-grid {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 5;
+      pointer-events: none;
+      display: none;
+      background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .pixel-grid.show { display: block; }
+
+    .photostrip-result {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 300;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .photostrip-result.open { display: flex; }
+    .photostrip-result img {
+      max-width: 85%;
+      max-height: 70vh;
+      border-radius: 16px;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.4);
+    }
+    .photostrip-result .strip-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .photostrip-result .strip-actions button {
+      padding: 10px 28px;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .photostrip-result .strip-actions button:hover { transform: scale(1.05); }
+    .photostrip-result .strip-actions .dl-btn {
+      background: #f8bbd0;
+      color: #4a2a3a;
+    }
+    .photostrip-result .strip-actions .retry-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← Kembali</a>
+  <div class="counter" id="counter">Kucing diklik: 0</div>
+
+  <div class="floating-elements">
+    <span class="float-item">🌸</span>
+    <span class="float-item">✨</span>
+    <span class="float-item">🩵</span>
+    <span class="float-item">☁️</span>
+    <span class="float-item">🫧</span>
+    <span class="float-item">🌷</span>
+    <span class="float-item">💕</span>
+    <span class="float-item">⭐</span>
+  </div>
+
+  <div class="cat" id="cat">🐱</div>
+
+  <button class="photobooth-btn" id="boothBtn" onclick="openBooth()">📸</button>
+
+  <div class="booth-overlay" id="boothOverlay">
+    <div class="booth-view">
+      <video id="video" autoplay playsinline></video>
+      <div class="cat-overlay" id="catOverlay">🐱</div>
+      <div class="pixel-grid" id="pixelGrid"></div>
+      <div class="booth-countdown" id="countdown"></div>
+      <button class="booth-close" onclick="closeBooth()">✕</button>
+      <div class="booth-timer-hint" id="timerHint">3 foto otomatis</div>
+      <div class="frame-selector">
+        <div class="frame-opt active" data-frame="pink" style="background:#f8bbd0"></div>
+
+        <div class="frame-opt" data-frame="lavender" style="background:#d4c4f0"></div>
+        <div class="frame-opt" data-frame="mint" style="background:#b8e6d0"></div>
+        <div class="frame-opt" data-frame="peach" style="background:#fdd9b5"></div>
+      </div>
+      <div class="booth-filters">
+        <button class="filter-btn active" data-filter="none" style="font-size:9px">no</button>
+        <button class="filter-btn" data-filter="warm" style="background:rgba(255,200,100,0.3)">wm</button>
+
+        <button class="filter-btn" data-filter="vintage" style="background:rgba(180,140,100,0.3)">vt</button>
+        <button class="filter-btn" data-filter="soft" style="background:rgba(255,200,220,0.3)">sf</button>
+        <button class="filter-btn" data-filter="dramatic" style="background:rgba(50,50,50,0.3)">dr</button>
+        <button class="filter-btn" data-filter="pixel" style="background:rgba(200,200,200,0.3)">px</button>
+        <button class="filter-btn" data-sticker="🐱">+🐱</button>
+        <button class="filter-btn" data-sticker="🌸">+🌸</button>
+        <button class="filter-btn" data-sticker="💕">+💕</button>
+        <button class="filter-btn" data-sticker="⭐">+⭐</button>
+      </div>
+      <div class="booth-progress" id="boothProgress">
+        <div class="booth-dot" id="dot0"></div>
+        <div class="booth-dot" id="dot1"></div>
+        <div class="booth-dot" id="dot2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="photostrip-result" id="stripResult">
+    <img id="stripImg" />
+    <div class="strip-actions">
+      <button class="retry-btn" onclick="retryBooth()">Ulang 📸</button>
+      <button class="dl-btn" onclick="downloadStrip()">Simpan 💾</button>
+    </div>
+  </div>
+
+  <div class="mood-label" id="moodLabel">🥰</div>
+
+  <div class="mood-bar">
+    <span class="mood-btn" data-mood="🥰">🥰</span>
+    <span class="mood-btn" data-mood="😊">😊</span>
+    <span class="mood-btn" data-mood="🌸">🌸</span>
+    <span class="mood-btn" data-mood="🩵">🩵</span>
+    <span class="mood-btn" data-mood="✨">✨</span>
+    <span class="mood-btn" data-mood="☁️">☁️</span>
+  </div>
+
+  <script>
+    const cat = document.getElementById('cat');
+    const moodLabel = document.getElementById('moodLabel');
+    const counter = document.getElementById('counter');
+    let clickCount = 0;
+    let catX = window.innerWidth / 2;
+    let catY = window.innerHeight / 2;
+    let targetX = catX;
+    let targetY = catY;
+    let isFollowing = false;
+
+    const messages = [
+      'meow~ 🐱',
+      'kamu baik banget! 💕',
+      'aku suka kamu! 🩵',
+      'semangat hari ini! ✨',
+      'kamu keren! 🌸',
+      'peluk kucing dulu yuk!',
+      'meong meong~ 🐱',
+      'jangan sedih ya 🥺',
+      'kamu hebat tau! 💪',
+      'udah pinter, imut lagi!',
+      'aku temenin kamu! 🩵',
+      'meow meow meow!',
+      'happy terus ya! 🌤️',
+      'kamu layak bahagia! 💕',
+      '🐱 cuddle time!',
+      'makasih udah sayang kucing 🥺',
+      'kamu rumah buat aku 🩵',
+      'ngapain aja hari ini?',
+      'aku bangga sama kamu ✨',
+      'sini aku elus~ 🐱'
+    ];
+
+    function moveCat() {
+      const dx = targetX - catX;
+      const dy = targetY - catY;
+      catX += dx * 0.08;
+      catY += dy * 0.08;
+      cat.style.left = catX + 'px';
+      cat.style.top = catY + 'px';
+
+      if (Math.abs(dx) > 1 || Math.abs(dy) > 1 || isFollowing) {
+        requestAnimationFrame(moveCat);
+      }
+    }
+
+    document.addEventListener('mousemove', e => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      if (!isFollowing) {
+        isFollowing = true;
+        moveCat();
+      }
+    });
+
+    document.addEventListener('touchmove', e => {
+      const touch = e.touches[0];
+      targetX = touch.clientX;
+      targetY = touch.clientY;
+      if (!isFollowing) {
+        isFollowing = true;
+        moveCat();
+      }
+    }, { passive: true });
+
+    function spawnSparkles(x, y) {
+      const emojis = ['✨', '💕', '🩵', '🌸', '⭐', '🫧'];
+      for (let i = 0; i < 6; i++) {
+        const el = document.createElement('div');
+        el.className = 'sparkle-particle';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.setProperty('--dx', (Math.random() - 0.5) * 120 + 'px');
+        el.style.setProperty('--dy', (Math.random() - 0.5) * 120 + 'px');
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+      }
+    }
+
+    function showMessage(x, y) {
+      const popup = document.createElement('div');
+      popup.className = 'msg-popup';
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      popup.innerHTML = `<span class="msg-emoji">🐱</span>${msg}`;
+      popup.style.left = (x - 80) + 'px';
+      popup.style.top = (y - 100) + 'px';
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 2500);
+    }
+
+    cat.addEventListener('click', e => {
+      e.stopPropagation();
+      clickCount++;
+      counter.textContent = 'Kucing diklik: ' + clickCount;
+      const rect = cat.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spawnSparkles(cx, cy);
+      showMessage(cx, cy);
+      cat.style.transform = 'scale(1.3)';
+      setTimeout(() => cat.style.transform = 'scale(1)', 200);
+    });
+
+    cat.addEventListener('touchstart', e => {
+      e.preventDefault();
+      clickCount++;
+      counter.textContent = 'Kucing diklik: ' + clickCount;
+      const rect = cat.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      spawnSparkles(cx, cy);
+      showMessage(cx, cy);
+      cat.style.transform = 'scale(1.3)';
+      setTimeout(() => cat.style.transform = 'scale(1)', 200);
+    });
+
+    const filterMap = {
+      none: 'none',
+      warm: 'sepia(0.4) saturate(1.3) brightness(1.1) contrast(1.05)',
+
+      vintage: 'sepia(0.6) saturate(0.7) contrast(0.9) brightness(1.05)',
+      soft: 'brightness(1.15) saturate(0.7) contrast(0.9) blur(0.3px)',
+      dramatic: 'contrast(1.4) brightness(0.9) saturate(1.1)',
+      pixel: 'none'
+    };
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const filter = btn.dataset.filter;
+        const sticker = btn.dataset.sticker;
+        const video = document.getElementById('video');
+
+        if (sticker) {
+          extraStickers.push({ emoji: sticker });
+          const s = document.createElement('span');
+          s.textContent = sticker;
+          s.className = 'cat-overlay';
+          s.style.cssText = 'position:absolute;font-size:50px;pointer-events:none;animation:catBob 2s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));';
+          s.style.left = Math.random() * 60 + 10 + '%';
+          s.style.top = Math.random() * 50 + 10 + '%';
+          document.querySelector('.booth-view').appendChild(s);
+          return;
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filterVal = filterMap[filter] || 'none';
+        video.style.filter = filterVal;
+        currentFilter = filterVal;
+        document.getElementById('pixelGrid').classList.toggle('show', filter === 'pixel');
+      });
+    });
+
+    document.querySelectorAll('.frame-opt').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        document.querySelectorAll('.frame-opt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedFrame = btn.dataset.frame;
+      });
+    });
+
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const mood = btn.dataset.mood;
+        moodLabel.textContent = mood;
+        moodLabel.classList.add('show');
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 500);
+        clearTimeout(moodLabel._timeout);
+        moodLabel._timeout = setTimeout(() => moodLabel.classList.remove('show'), 2000);
+
+        const colors = {
+          '🥰': '#fce4ec',
+          '😊': '#fff3e0',
+          '🌸': '#fce4ec',
+          '🩵': '#e8f4ff',
+          '✨': '#f3e5f5',
+          '☁️': '#e8f4ff'
+        };
+        if (colors[mood]) {
+          document.body.style.background = `linear-gradient(180deg, ${colors[mood]} 0%, #f8bbd0 40%, #f48fb1 100%)`;
+        }
+      });
+    });
+
+    let stream = null;
+    let boothPhotos = [];
+    let boothIndex = 0;
+    let isShooting = false;
+    let currentFilter = 'none';
+    let extraStickers = [];
+    let selectedFrame = 'pink';
+
+    function openBooth() {
+      boothPhotos = [];
+      boothIndex = 0;
+      isShooting = false;
+      currentFilter = 'none';
+      extraStickers = [];
+      selectedFrame = 'pink';
+      document.getElementById('timerHint').textContent = '3 foto otomatis';
+      document.getElementById('boothOverlay').classList.add('open');
+      document.getElementById('stripResult').classList.remove('open');
+      document.querySelectorAll('.booth-view .cat-overlay:not(#catOverlay)').forEach(el => el.remove());
+      document.getElementById('video').style.filter = 'none';
+      document.getElementById('pixelGrid').classList.remove('show');
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        if (b.dataset.filter === 'none') b.classList.add('active');
+      });
+
+      const catRect = cat.getBoundingClientRect();
+      const overlay = document.getElementById('catOverlay');
+      const view = document.querySelector('.booth-view');
+      const viewRect = view.getBoundingClientRect();
+      const relX = ((catRect.left + catRect.width / 2) - viewRect.left) / viewRect.width * 100;
+      const relY = ((catRect.top + catRect.height / 2) - viewRect.top) / viewRect.height * 100;
+      overlay.style.left = Math.max(5, Math.min(80, relX)) + '%';
+      overlay.style.top = Math.max(5, Math.min(80, relY)) + '%';
+
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(s => {
+          stream = s;
+          document.getElementById('video').srcObject = s;
+          startCountdown();
+        })
+        .catch(() => alert('Kamera gak bisa diakses 😿'));
+    }
+
+    function closeBooth() {
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      isShooting = false;
+      document.getElementById('boothOverlay').classList.remove('open');
+      document.getElementById('stripResult').classList.remove('open');
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.className = 'booth-dot';
+        if (i < boothPhotos.length) dot.classList.add('done');
+        else if (i === boothIndex) dot.classList.add('current');
+      }
+    }
+
+    function startCountdown() {
+      boothIndex = boothPhotos.length;
+      updateDots();
+      if (boothIndex >= 3) {
+        makeStrip();
+        return;
+      }
+      isShooting = true;
+      const hint = document.getElementById('timerHint');
+      hint.textContent = 'Foto ' + (boothIndex + 1) + ' dari 3 — pencet layar';
+    }
+
+    document.getElementById('boothOverlay').addEventListener('click', function(e) {
+      if (!isShooting) return;
+      if (e.target.closest('.booth-close') || e.target.closest('.filter-btn') || e.target.closest('.frame-opt')) return;
+      const cd = document.getElementById('countdown');
+      cd.textContent = '📸';
+      cd.classList.add('show');
+      isShooting = false;
+      setTimeout(() => {
+        cd.classList.remove('show');
+        captureBoothPhoto();
+      }, 200);
+    });
+
+    function pixelateCanvas(canvas, blockSize) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = Math.ceil(w / blockSize);
+      tempCanvas.height = Math.ceil(h / blockSize);
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.imageSmoothingEnabled = false;
+      tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(tempCanvas, 0, 0, w, h);
+      ctx.imageSmoothingEnabled = true;
+    }
+
+    function captureBoothPhoto() {
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
+      const w = video.videoWidth, h = video.videoHeight;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      if (currentFilter !== 'none' && currentFilter !== 'pixel') {
+        ctx.filter = currentFilter;
+      }
+
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0);
+
+      const catEl = document.getElementById('catOverlay');
+      const catRect = catEl.getBoundingClientRect();
+      const viewRect = video.getBoundingClientRect();
+
+      const scaleX = canvas.width / viewRect.width;
+      const scaleY = canvas.height / viewRect.height;
+      const catXPos = (catRect.left - viewRect.left) * scaleX;
+      const catYPos = (catRect.top - viewRect.top) * scaleY;
+      const catSize = 70 * scaleX;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.filter = 'none';
+      ctx.font = catSize + 'px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🐱', canvas.width - catXPos - catSize / 2, catYPos + catSize / 2);
+
+      const stickers = document.querySelectorAll('.booth-view .cat-overlay:not(#catOverlay)');
+      stickers.forEach(s => {
+        const r = s.getBoundingClientRect();
+        const sx = (r.left - viewRect.left + r.width / 2) * scaleX;
+        const sy = (r.top - viewRect.top + r.height / 2) * scaleY;
+        const sz = 50 * scaleX;
+        ctx.font = sz + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(s.textContent, canvas.width - sx, sy);
+      });
+
+      if (currentFilter === 'pixel') {
+        pixelateCanvas(canvas, 12);
+      }
+
+      boothPhotos.push(canvas.toDataURL('image/png'));
+
+      setTimeout(() => {
+        startCountdown();
+      }, 300);
+    }
+
+    function makeStrip() {
+      isShooting = false;
+      const stripW = 280, margin = 14, gap = 8;
+      const photoW = stripW - margin * 2;
+      let totalH = margin;
+
+      const photos = [];
+      let loaded = 0;
+
+      boothPhotos.forEach((data, i) => {
+        const img = new Image();
+        img.src = data;
+        photos.push(img);
+        img.onload = () => {
+          loaded++;
+          if (loaded === 3) renderStrip();
+        };
+        img.onerror = () => { loaded++; if (loaded === 3) renderStrip(); };
+      });
+
+      function renderStrip() {
+        const frameColors = {
+          pink: '#fff0f5',
+          blue: '#e8f4ff',
+          lavender: '#f3e8ff',
+          mint: '#e8fff0',
+          peach: '#fff4e8'
+        };
+        const shadowColors = {
+          pink: 'rgba(244,143,177,0.3)',
+          blue: 'rgba(179,217,255,0.3)',
+          lavender: 'rgba(200,180,240,0.3)',
+          mint: 'rgba(180,230,200,0.3)',
+          peach: 'rgba(240,200,170,0.3)'
+        };
+        const bgColor = frameColors[selectedFrame] || '#fff0f5';
+        const shadowColor = shadowColors[selectedFrame] || 'rgba(244,143,177,0.3)';
+
+        const photoH = [];
+        let totalPhotosH = 0;
+        photos.forEach(img => {
+          const h = photoW * (img.height / img.width);
+          photoH.push(h);
+          totalPhotosH += h;
+        });
+
+        totalH = margin + totalPhotosH + gap * 2 + margin + 30;
+
+        const stripCanvas = document.createElement('canvas');
+        stripCanvas.width = stripW;
+        stripCanvas.height = totalH;
+        const ctx = stripCanvas.getContext('2d');
+
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, stripW, totalH);
+
+        let y = margin;
+        photos.forEach((img, i) => {
+          const h = photoH[i];
+          ctx.save();
+          ctx.shadowColor = shadowColor;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.roundRect(margin, y, photoW, h, 10);
+          ctx.clip();
+          ctx.drawImage(img, margin, y, photoW, h);
+          ctx.restore();
+          y += h + gap;
+        });
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '12px Quicksand, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🌸 photobooth by Dewiw 🐱', stripW / 2, totalH - 10);
+
+        const result = stripCanvas.toDataURL('image/png');
+        document.getElementById('stripImg').src = result;
+        document.getElementById('boothOverlay').classList.remove('open');
+        document.getElementById('stripResult').classList.add('open');
+
+        if (stream) {
+          stream.getTracks().forEach(t => t.stop());
+          stream = null;
+        }
+      }
+    }
+
+    function retryBooth() {
+      document.getElementById('stripResult').classList.remove('open');
+      openBooth();
+    }
+
+    function downloadStrip() {
+      const img = document.getElementById('stripImg');
+      const a = document.createElement('a');
+      a.href = img.src;
+      a.download = 'photobooth-🐱.png';
+      a.click();
+    }
+
+    catX = window.innerWidth / 2;
+    catY = window.innerHeight / 2;
+    targetX = catX;
+    targetY = catY;
+    cat.style.left = catX + 'px';
+    cat.style.top = catY + 'px';
+  </script>
+</body>
+</html>

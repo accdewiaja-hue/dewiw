@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌸 Skills</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="clouds">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+  </div>
+
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav class="menu-overlay" id="menuOverlay">
+    <div class="menu-content">
+      <a href="index.html" class="menu-link">🏠 Home</a>
+      <a href="about.html" class="menu-link">💌 About</a>
+      <a href="skills.html" class="menu-link">🌸 Skills</a>
+      <a href="projects.html" class="menu-link">🍡 Projects</a>
+      <a href="contact.html" class="menu-link">💬 Contact</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section class="skills" id="skills">
+      <h2>My Skill</h2>
+      <div class="skill-tags">
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+        <span>Node.js</span>
+        <span>Cisco</span>
+        <span>GitHub</span>
+      </div>
+    </section>
+
+    <div style="text-align:right">
+      <a href="projects.html" class="next-link">Projects →</a>
+    </div>
+
+    <footer>
+      <p>Dibuat dengan ☁️ dan 💙 — 2026</p>
+    </footer>
+  </div>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('menuOverlay').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
